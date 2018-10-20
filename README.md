@@ -22,12 +22,15 @@ still had. I would then write the lessons learned and conclusion/summary of my r
 Here is the rest of my proposal:
 
 The real-world problem I would like to solve is a writing program. In the program (like Microsoft word), a user can type anything they want. At the end of the program the currently written strings would be written to a file. Anything they type will be added to a linked list as a string. After the user types they will be asked where to add it (what index number to add it too). They will be able to remove any element with the command "DeleteWord", which will prompt them for an index number to remove. They will also be able to add an element anywhere with the command "InsertWord", will prompt them for an index number to add too. Otherwise anything typed will be added to the end of the linkedList.  Also, every word they type is added to a stack called undo and a stack called redo. If they type the command "UndoWord", it will undo. If they do the command "RedoWord", it will redo. So, if I type the word "Ben" it will be put into the stack undo and redo. Both first values will read "Ben" if I hit the redo command line, it will type Ben again. If I hit the undo command line, it will remove Ben, while removing the previous ben from the redo and adding another. If I then hit redo, it would add Ben back to the linked list and back to the undo stack. This process happens each time the user enters a new input. The user can also delete elements from any place in the linkedlist which will then go to the undo, but not the redo stack. 
+
 It would look like this:
+
 -------------------------------------------------------
 Welcome to the writing program! 
 Keywords: InsertWord, UndoWord, RedoWord, DeleteWord.
 
 Go ahead and type one string at a time:
+
 -------------------------------------------------------
 -User types- : Hello
 
@@ -67,6 +70,7 @@ Hello World! Hi!
 
 Your document has successfully been written to file!
 Exiting now...
+
 -------------------------------------------------------
 
 
