@@ -9,7 +9,7 @@ import java.util.InputMismatchException; // Allows the inputMisMatch exception t
 import java.util.Scanner; // Allows user input.
 import javax.swing.JOptionPane; // Allows a GUI.
 
-// CURRENT TIME: 17:57 (hours:minutes)
+// CURRENT TIME: 20:10 (hours:minutes)
 
 /*
 Sprint One - Along with writing the formalized proposal.
@@ -188,27 +188,66 @@ public class FinalProjectTester
 				
 				// Ask the user for what word they want to put into the linkedList.
 				System.out.print("Type your word to insert into " + userInputIndex + ": ");
-				userInputInsert = userInputScan.next(); // Get the nextLine as the userInputInsert.
-				// Set the word and indexValue (minus one so it reflects an actual array) to the function insertionAtIndex.
-				wordsTyped.insertionAtIndex(userInputInsert, userInputIndex - 1);
-				
-				lastCommand = "InsertWord"; // Set the last command to InsertWord.
-				
-				// If undo and redo are bigger than zero then pop the top value for the new one.
-				if (undo.size() > 0)
+				userInputInsert = userInputScan.nextLine(); // Get the nextLine as the userInputInsert.
+				// If the user's string has white space do this.
+				if (userInputInsert.contains(" "))
 				{
-					undo.pop();
+					// Create a String array with all the words.
+					String[] splited = userInputInsert.split("\\s+");
+					
+					// insert them one at a time.
+					for (int i = 0; i < splited.length; i++)
+					{
+						// Set the word and indexValue (minus one so it reflects an actual array) to the function insertionAtIndex.
+						wordsTyped.insertionAtIndex(splited[i], userInputIndex - 1);
+						
+						lastCommand = "InsertWord"; // Set the last command to InsertWord.
+						
+						// If undo and redo are bigger than zero then pop the top value for the new one.
+						if (undo.size() > 0)
+						{
+							undo.pop();
+						}
+						if (redo.size() > 0)
+						{
+							redo.pop();
+						}
+						
+						// Push the word onto the redo and undo stacks.
+						redo.push(splited[i]);
+						undo.push(splited[i]);
+						
+						// If i plus one is equal to splited.length then dont increase the index.
+						if ((i + 1) != splited.length)
+						{
+							userInputIndex++; // Increase the current index so the next string is inserted correctly.
+						}
+					}
 				}
-				if (redo.size() > 0)
+				// Else do this.
+				else
 				{
-					redo.pop();
-				}
+					// Set the word and indexValue (minus one so it reflects an actual array) to the function insertionAtIndex.
+					wordsTyped.insertionAtIndex(userInputInsert, userInputIndex - 1);
 				
-				// Push the word onto the redo and undo stacks.
-				redo.push(userInputInsert);
-				undo.push(userInputInsert);
+					lastCommand = "InsertWord"; // Set the last command to InsertWord.
+				
+					// If undo and redo are bigger than zero then pop the top value for the new one.
+					if (undo.size() > 0)
+					{
+						undo.pop();
+					}
+					if (redo.size() > 0)
+					{
+						redo.pop();
+					}
+				
+					// Push the word onto the redo and undo stacks.
+					redo.push(userInputInsert);
+					undo.push(userInputInsert);
+				}
 			}
-			// UNDO COMMAND:
+			// UNDOWORD COMMAND:
 			if (userInput.equals("UndoWord") || userInput.equals("undoword") || userInput.equals("Undoword") || userInput.equals("undoWord"))
 			{
 				// Set triggered to true since a command has occurred.
@@ -261,7 +300,7 @@ public class FinalProjectTester
 				}
 			}
 			
-			// REDO COMMAND:
+			// REDOWORD COMMAND:
 			if (userInput.equals("RedoWord") || userInput.equals("redoword") || userInput.equals("Redoword") || userInput.equals("redoWord"))
 			{
 				// Set triggered to true since a command has occurred and set the undoTwiceCheck to RedoWord.
@@ -271,7 +310,7 @@ public class FinalProjectTester
 				redoWord = redo.pop(); // Pop the top word of the redo stack.
 				
 				// If the lastCommand was InsertWord, insert another word at the same index.
-				if (lastCommand.equals("InsertWord"))
+				if (lastCommand.equals("InsertWord") || lastCommand.equals("RedoInsertWord"))
 				{
 					redoWordIndex = userInputIndex - 1;
 					wordsTyped.insertionAtIndex(redoWord, redoWordIndex);
@@ -318,7 +357,7 @@ public class FinalProjectTester
 				undo.push(redoWord);
 			}
 			
-			// DELETE COMMAND:
+			// DELETEWORD COMMAND:
 			if (userInput.equals("DeleteWord") || userInput.equals("deleteword") || userInput.equals("Deleteword") || userInput.equals("deleteWord"))
 			{
 				int biggestSizePossible = (wordsTyped.getSize()); // Set the biggestSizePossible to the size of the linkedList.
@@ -417,7 +456,7 @@ public class FinalProjectTester
 		} while (endProgram == false); // While endProgram is false.
 		
 		// Ask the user if they want to save what they have typed.
-		String userInputGUI = JOptionPane.showInputDialog("Do you want to save the file you have created (Yes or No)?\n(This deletes any information already saved)");
+		String userInputGUI = JOptionPane.showInputDialog("Do you want to save what you have written (Yes or No)?\n(This deletes any information already saved)");
 		
 		// Do-while loop to make sure the user inputs correct information.
 		do 
@@ -442,7 +481,7 @@ public class FinalProjectTester
 			}
 			else
 			{
-				userInputGUI = JOptionPane.showInputDialog("Do you want to save the file you have created (Yes or No)?");
+				userInputGUI = JOptionPane.showInputDialog("Incorrect Input.. Please try again:\nDo you want to save what you have written (Yes or No)?");
 			}
 		} while(saveYesOrNo == false);
 		
