@@ -1,6 +1,6 @@
 # Data_Structures_Final
 This is where I will be posting my progress as I work on my Data Structures final.
-Currently we are at 4 hours and one minute.
+Currently we are at 20 hours and 10 minutes.
 
 Here is my final project proposed sprints: 
 
