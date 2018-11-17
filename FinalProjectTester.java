@@ -10,7 +10,7 @@ import java.util.InputMismatchException; // Allows the inputMisMatch exception t
 import java.util.Scanner; // Allows user input.
 import javax.swing.JOptionPane; // Allows mini GUI pop-ups.
 
-// CURRENT TIME: 29:13 (hours:minutes)
+// CURRENT TIME: 30:13 (hours:minutes)
 
 /*
 Sprint One - Along with writing the formalized proposal.
@@ -65,7 +65,13 @@ public class FinalProjectTester
 			{
 				firstLoop = false; // Set the firstLoop to false.
 				
-				userInput = JOptionPane.showInputDialog("Please enter a word or a command:"); // Get the user's next command or word typed.
+				userInput = JOptionPane.showInputDialog(null, "Please enter a word:", "Type here."); // Get the user's next command or word typed.
+				
+				// If the user presses the cancel button end the program.
+				if (userInput == null)
+				{
+					userInput = "EndProgram";
+				}
 				
 				// If the users input equals a command during the first loop then tell the user to enter a word before using commands.
 				if (userInput.equals("InsertWord") || userInput.equals("UndoWord") || userInput.equals("RedoWord") || userInput.equals("DeleteWord"))
@@ -87,24 +93,55 @@ public class FinalProjectTester
 				// Else insert the users word.
 				else 
 				{
-					// Insert the user's input and push the userInput on both stacks.
-					wordsTyped.insertion(userInput);
-					
-					// If undo and redo are bigger than zero then pop the top value for the new one.
-					if (undo.size() > 0)
+					// If the user's string has white space do this.
+					if (userInput.contains(" "))
 					{
-						undo.pop();
+						// Create a String array with all the words.
+						String[] splited = userInput.split("\\s+");
+						
+						// Insert them one at a time.
+						for (int i = 0; i < splited.length; i++)
+						{
+							// Insert each one, one at a time.
+							wordsTyped.insertion(splited[i]);
+							
+							// If undo and redo are bigger than zero then pop the top value for the new one.
+							if (undo.size() > 0)
+							{
+								undo.pop();
+							}
+							if (redo.size() > 0)
+							{
+								redo.pop();
+							}
+							
+							// Push the word onto the redo and undo stacks.
+							redo.push(splited[i]);
+							undo.push(splited[i]);
+						}
 					}
-					if (redo.size() > 0)
+					else
 					{
-						redo.pop();
+						wordsTyped.insertion(userInput);
+						
+						// If undo and redo are bigger than zero then pop the top value for the new one.
+						if (undo.size() > 0)
+						{
+							undo.pop();
+						}
+						if (redo.size() > 0)
+						{
+							redo.pop();
+						}
+						
+						// Push the word onto the redo and undo stacks.
+						undo.push(userInput);
+						redo.push(userInput);
 					}
-					
-					// Push the word onto the redo and undo stacks.
-					undo.push(userInput);
-					redo.push(userInput);
 				}
 			}
+			
+			finalProjectGUI.frame2.setVisible(false); // Set the info frame to non visible.
 			
 			// If the size of the linkedList is greater than one, then print out what the user has typed.
 			if (wordsTyped.getSize() > 0)
@@ -116,6 +153,12 @@ public class FinalProjectTester
 			if (endProgram == false)
 			{
 				userInput = JOptionPane.showInputDialog("Please enter a word or a command:"); // Get the user's next command or word typed.
+			}
+			
+			// If the user presses the cancel button end the program.
+			if (userInput == null)
+			{
+				userInput = "EndProgram";
 			}
 			
 			// If the wordsTyped is equal to zero.
@@ -141,7 +184,7 @@ public class FinalProjectTester
 			if (userInput.equals("CommandsWord") || userInput.equals("commandsword") || userInput.equals("Commandsword") || userInput.equals("commandsWord"))
 			{
 				// Show a message showing the commands and set the boolean triggered to true.
-				JOptionPane.showMessageDialog(null, "Commands: InsertWord, UndoWord, RedoWord, DeleteWord, EndProgram.", "Commands", 0);
+				JOptionPane.showMessageDialog(null, "Commands: InsertWord, UndoWord, RedoWord, DeleteWord, EndProgram.", "Commands", JOptionPane.INFORMATION_MESSAGE);
 				triggered = true;
 			}
 			
@@ -198,24 +241,62 @@ public class FinalProjectTester
 				// Ask the user for what word they want to put into the linkedList.
 				userInputInsert = JOptionPane.showInputDialog("Type your word to insert into " + userInputIndex + ":");
 				
-				// Set the word and indexValue (minus one so it reflects an actual array) to the function insertionAtIndex.
-				wordsTyped.insertionAtIndex(userInputInsert, userInputIndex - 1);
-				
-				lastCommand = "InsertWord"; // Set the last command to InsertWord.
-				
-				// If undo and redo are bigger than zero then pop the top value for the new one.
-				if (undo.size() > 0)
+				if (userInputInsert.contains(" "))
 				{
-					undo.pop();
+					// Create a String array with all the words.
+					String[] splited = userInputInsert.split("\\s+");
+					
+					// insert them one at a time.
+					for (int i = 0; i < splited.length; i++)
+					{
+						// Set the word and indexValue (minus one so it reflects an actual array) to the function insertionAtIndex.
+						wordsTyped.insertionAtIndex(splited[i], userInputIndex - 1);
+						
+						lastCommand = "InsertWord"; // Set the last command to InsertWord.
+						
+						// If undo and redo are bigger than zero then pop the top value for the new one.
+						if (undo.size() > 0)
+						{
+							undo.pop();
+						}
+						if (redo.size() > 0)
+						{
+							redo.pop();
+						}
+						
+						// Push the word onto the redo and undo stacks.
+						redo.push(splited[i]);
+						undo.push(splited[i]);
+						
+						// If i plus one is equal to splited.length then dont increase the index.
+						if ((i + 1) != splited.length)
+						{
+							userInputIndex++; // Increase the current index so the next string is inserted correctly.
+						}
+					}
 				}
-				if (redo.size() > 0)
+				// Else do this.
+				else
 				{
-					redo.pop();
-				}
+					// Set the word and indexValue (minus one so it reflects an actual array) to the function insertionAtIndex.
+					wordsTyped.insertionAtIndex(userInputInsert, userInputIndex - 1);
 				
-				// Push the word onto the redo and undo stacks.
-				redo.push(userInputInsert);
-				undo.push(userInputInsert);
+					lastCommand = "InsertWord"; // Set the last command to InsertWord.
+				
+					// If undo and redo are bigger than zero then pop the top value for the new one.
+					if (undo.size() > 0)
+					{
+						undo.pop();
+					}
+					if (redo.size() > 0)
+					{
+						redo.pop();
+					}
+				
+					// Push the word onto the redo and undo stacks.
+					redo.push(userInputInsert);
+					undo.push(userInputInsert);
+				}
 				
 				finalProjectGUI.updateWordsTyped(wordsTyped); // Update the words typed.
 			}
@@ -413,57 +494,105 @@ public class FinalProjectTester
 			// Else if any other commands haven't been entered insert the userInput.
 			else if (triggered == false)
 			{
-				// If undo and redo are bigger than zero then pop the top value for the new one.
-				if (undo.size() > 0)
+				finalProjectGUI.frame2.setVisible(false); // Set the info frame to non visible. 
+				
+				// If the user's string has white space do this.
+				if (userInput.contains(" "))
 				{
-					undo.pop();
+					// Create a String array with all the words.
+					String[] splited = userInput.split("\\s+");
+					
+					// Insert them one at a time.
+					for (int i = 0; i < splited.length; i++)
+					{
+						// Insert each one, one at a time.
+						wordsTyped.insertion(splited[i]);
+						
+						// If undo and redo are bigger than zero then pop the top value for the new one.
+						if (undo.size() > 0)
+						{
+							undo.pop();
+						}
+						if (redo.size() > 0)
+						{
+							redo.pop();
+						}
+						
+						// Push the word onto the redo and undo stacks.
+						redo.push(splited[i]);
+						undo.push(splited[i]);
+					}
 				}
-				if (redo.size() > 0)
+				else
 				{
-					redo.pop();
+					wordsTyped.insertion(userInput);
+					
+					// If undo and redo are bigger than zero then pop the top value for the new one.
+					if (undo.size() > 0)
+					{
+						undo.pop();
+					}
+					if (redo.size() > 0)
+					{
+						redo.pop();
+					}
+					
+					// Push the word onto the redo and undo stacks.
+					undo.push(userInput);
+					redo.push(userInput);
 				}
+				
 				undoTwiceCheck = "Default"; // Reset the undoTwiceCheck.
 				lastCommand = "Default"; // Set the last command to default.
-				
-				// Insert the user's input and push the userInput on both stacks.
-				wordsTyped.insertion(userInput);
-				undo.push(userInput);
-				redo.push(userInput);
 			}
 		} while (endProgram == false); // While endProgram is false.
 		
-		// Ask the user if they want to save what they have typed.
-		String userInputGUI = JOptionPane.showInputDialog("Do you want to save what you have written (Yes or No)?\n(This deletes any information already saved)");
-		
-		// Do-while loop to make sure the user inputs correct information.
-		do 
+		if (wordsTyped.getSize() > 0)
 		{
-			// If the user puts yes then save it to a text file and tell them if it was successful.
-			if (userInputGUI.equals("yes") || userInputGUI.equals("Yes"))
+			// Ask the user if they want to save what they have typed.
+			String userInputGUI = JOptionPane.showInputDialog("Do you want to save what you have written (Yes or No)?\n(This deletes any information already saved)");
+		
+			// If the user presses the cancel button allow the program to end without a null exception.
+			if (userInputGUI == null)
 			{
-				saveYesOrNo = true; // Set the boolean to true to get out of the do-while loop.
-			
-				// Try printing to the file.
-				try (PrintWriter out = new PrintWriter("wordDocument.txt"))
+				userInputGUI = "no";
+			}
+		
+			// Do-while loop to make sure the user inputs correct information.
+			do 
+			{
+				// If the user puts yes then save it to a text file and tell them if it was successful.
+				if (userInputGUI.equals("yes") || userInputGUI.equals("Yes"))
 				{
-					out.println(wordsTyped.display());
+					saveYesOrNo = true; // Set the boolean to true to get out of the do-while loop.
+			
+					// Try printing to the file.
+					try (PrintWriter out = new PrintWriter("wordDocument.txt"))
+					{
+						out.println(wordsTyped.display());
+					}
+					// If successful print a space and send a MessageDialog message to the user.
+					JOptionPane.showMessageDialog(null, "Save successful. The file was saved to: \"wordDocument.txt\"", "Success Message", JOptionPane.INFORMATION_MESSAGE);
 				}
-				// If successful print a space and send a MessageDialog message to the user.
-				JOptionPane.showMessageDialog(null, "Save successful. The file was saved to: \"wordDocument.txt\"", "Success Message", 0);
-			}
-			else if (userInputGUI.equals("no") || userInputGUI.equals("No"))
-			{
-				saveYesOrNo = true; // Set the boolean to true to get out of the do-while loop.
-				// Do nothing else.
-			}
-			else
-			{
-				userInputGUI = JOptionPane.showInputDialog("Incorrect Input.. Please try again:\nDo you want to save what you have written (Yes or No)?");
-			}
-		} while(saveYesOrNo == false);
+				else if (userInputGUI.equals("no") || userInputGUI.equals("No"))
+				{
+					saveYesOrNo = true; // Set the boolean to true to get out of the do-while loop.
+					// Do nothing else.
+				}
+				else
+				{
+					userInputGUI = JOptionPane.showInputDialog("Incorrect Input.. Please try again:\nDo you want to save what you have written (Yes or No)?");
+				}
+			} while(saveYesOrNo == false);
+		}
 		
 		// Tell the user thank you and that the program has ended.
-		JOptionPane.showMessageDialog(null, "Thanks for using the writing program. Please come again!", "End Message", 0);
+		JOptionPane.showMessageDialog(null, "Thanks for using the writing program. Please come again!", "End Message", JOptionPane.INFORMATION_MESSAGE);
+		
+		// Hide the GUI if it is open cause the program is ending.
+		finalProjectGUI.frame.setVisible(false); 
+		finalProjectGUI.frame2.setVisible(false);
+		
 		userInputScan.close(); // Close the scanner.
 	}
 }
