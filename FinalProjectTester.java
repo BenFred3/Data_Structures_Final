@@ -10,16 +10,6 @@ import javax.swing.JOptionPane; // Allows mini GUI pop-ups.
 
 // CURRENT TIME: 34:16 (hours:minutes)
 
-/*
-Sprint One - Along with writing the formalized proposal.
-
-Sprint Two - Along with starting to write the user’s manual including screenshots.
-
-Sprint Three - Along with finishing my formalized proposal and user’s manual if not already done.
-
-Sprint Four - I would then write the lessons learned and conclusion/summary of my report.
- */
-	
 public class FinalProjectTester
 {
 	public static void main(String[] args) throws stackEmptyException, linkedListFullException, linkedListEmptyException, FileNotFoundException
