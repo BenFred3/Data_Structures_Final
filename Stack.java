@@ -2,6 +2,7 @@
  * @author Benjamin Frederickson
  * This program creates a stack using an array.
  */
+
 // Exception handling if the stack is empty.
 @SuppressWarnings("serial")
 class stackEmptyException extends Exception 
